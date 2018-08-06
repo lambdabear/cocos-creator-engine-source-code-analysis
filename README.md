@@ -1,9 +1,4 @@
----
-title: Cocos-JS Engine 源码分析
-date: 2018-7-30T21:14:00
----
-
-<!-- # Cocos-JS Engine 源码分析 -->
+# Cocos-JS Engine 源码分析
 
 Cocos Creator 是当前非常流行的手游和微信小游戏的开发工具，Cocos Creator 的引擎部分包括 JavaScript 和 C++两个部分，我们团队主要用的是 JS-engine，因此有必要对 JS-engine 进行深入的分析与学习，而分析其源码是一种有效的学习手段。
 
@@ -17,10 +12,10 @@ CCgame 定义了一个核心对象 game，包含了整个游戏的主要状态�
 
 #### 事件 Event
 
-* EVENT*HIDE:"game*\_on_hide"
-* EVENT*SHOW:"game*\_on_show"
-* EVENT_GAME_INITED: "game_inited"
-* EVENT_RENDERER_INITED: "renderer_inited"
+- EVENT*HIDE:"game*\_on_hide"
+- EVENT*SHOW:"game*\_on_show"
+- EVENT_GAME_INITED: "game_inited"
+- EVENT_RENDERER_INITED: "renderer_inited"
 
 对应于前两个事件要特别注意，源码中给出了重要说明。  
 **事件"game_on_hide"**: 请注意，在 WEB 平台，这个事件不一定会 100% 触发，这完全取决于浏览器的回调行为。在原生平台，它对应的是应用被切换到后台事件，下拉菜单和上拉状态栏等不一定会触发这个事件，这取决于系统行为。  
@@ -28,14 +23,14 @@ CCgame 定义了一个核心对象 game，包含了整个游戏的主要状态�
 
 #### 渲染类型 RENDER_TYPE
 
-* RENDER_TYPE_CANVAS: 0
-* RENDER_TYPE_WEBGL: 1
-* RENDER_TYPE_OPENGL: 2
+- RENDER_TYPE_CANVAS: 0
+- RENDER_TYPE_WEBGL: 1
+- RENDER_TYPE_OPENGL: 2
 
 #### 根节点 RootNodes
 
-* \_persistRootNodes: {}
-* \_ignoreRemovePersistNode: null
+- \_persistRootNodes: {}
+- \_ignoreRemovePersistNode: null
 
 #### Config 键值
 
@@ -58,20 +53,20 @@ CONFIG_KEY: {
 
 #### 状态 States
 
-* \_paused: true, //whether the game is paused
-* \_configLoaded: false, //whether config loaded
-* \_isCloning: false, // deserializing or instantiating
-* \_prepareCalled: false, //whether the prepare function has been called
-* \_prepared: false, //whether the engine has prepared
-* \_rendererInitialized: false,
-* \_renderContext: null,
-* \_intervalId: null, //interval target of main
-* \_lastTime: null,
-* \_frameTime: null,
+- \_paused: true, //whether the game is paused
+- \_configLoaded: false, //whether config loaded
+- \_isCloning: false, // deserializing or instantiating
+- \_prepareCalled: false, //whether the prepare function has been called
+- \_prepared: false, //whether the engine has prepared
+- \_rendererInitialized: false,
+- \_renderContext: null,
+- \_intervalId: null, //interval target of main
+- \_lastTime: null,
+- \_frameTime: null,
 
 #### 场景链表 Scenes list
 
-* \_sceneInfos: []
+- \_sceneInfos: []
 
 #### 公共方法 Public Methods
 
@@ -182,80 +177,80 @@ cc.DisplayLinkDirector 是继承于 cc.Director，cc.DisplayLinkDirector 定义�
 mainLoop: CC_EDITOR
   ? function(deltaTime, updateAnimate) {
       if (!this._paused) {
-        this.emit(cc.Director.EVENT_BEFORE_UPDATE)
+        this.emit(cc.Director.EVENT_BEFORE_UPDATE);
 
-        this._compScheduler.startPhase()
-        this._compScheduler.updatePhase(deltaTime)
+        this._compScheduler.startPhase();
+        this._compScheduler.updatePhase(deltaTime);
 
         if (updateAnimate) {
-          this._scheduler.update(deltaTime)
+          this._scheduler.update(deltaTime);
         }
 
-        this._compScheduler.lateUpdatePhase(deltaTime)
+        this._compScheduler.lateUpdatePhase(deltaTime);
 
-        this.emit(cc.Director.EVENT_AFTER_UPDATE)
+        this.emit(cc.Director.EVENT_AFTER_UPDATE);
       }
 
-      this.emit(cc.Director.EVENT_BEFORE_VISIT)
+      this.emit(cc.Director.EVENT_BEFORE_VISIT);
       // update the scene
-      this._visitScene()
-      this.emit(cc.Director.EVENT_AFTER_VISIT)
+      this._visitScene();
+      this.emit(cc.Director.EVENT_AFTER_VISIT);
 
       // Render
-      cc.g_NumberOfDraws = 0
-      cc.renderer.clear()
+      cc.g_NumberOfDraws = 0;
+      cc.renderer.clear();
 
-      cc.renderer.rendering(cc._renderContext)
-      this._totalFrames++
+      cc.renderer.rendering(cc._renderContext);
+      this._totalFrames++;
 
-      this.emit(cc.Director.EVENT_AFTER_DRAW)
+      this.emit(cc.Director.EVENT_AFTER_DRAW);
     }
   : function() {
       if (this._purgeDirectorInNextLoop) {
-        this._purgeDirectorInNextLoop = false
-        this.purgeDirector()
+        this._purgeDirectorInNextLoop = false;
+        this.purgeDirector();
       } else if (!this.invalid) {
         // calculate "global" dt
-        this.calculateDeltaTime()
+        this.calculateDeltaTime();
 
         if (!this._paused) {
-          this.emit(cc.Director.EVENT_BEFORE_UPDATE)
+          this.emit(cc.Director.EVENT_BEFORE_UPDATE);
           // Call start for new added components
-          this._compScheduler.startPhase()
+          this._compScheduler.startPhase();
           // Update for components
-          this._compScheduler.updatePhase(this._deltaTime)
+          this._compScheduler.updatePhase(this._deltaTime);
           // Engine update with scheduler
-          this._scheduler.update(this._deltaTime)
+          this._scheduler.update(this._deltaTime);
           // Late update for components
-          this._compScheduler.lateUpdatePhase(this._deltaTime)
+          this._compScheduler.lateUpdatePhase(this._deltaTime);
           // User can use this event to do things after update
-          this.emit(cc.Director.EVENT_AFTER_UPDATE)
+          this.emit(cc.Director.EVENT_AFTER_UPDATE);
           // Destroy entities that have been removed recently
-          cc.Object._deferredDestroy()
+          cc.Object._deferredDestroy();
         }
 
         /* to avoid flickr, nextScene MUST be here: after tick and before draw.
              XXX: Which bug is this one. It seems that it can't be reproduced with v0.9 */
         if (this._nextScene) {
-          this.setNextScene()
+          this.setNextScene();
         }
 
-        this.emit(cc.Director.EVENT_BEFORE_VISIT)
+        this.emit(cc.Director.EVENT_BEFORE_VISIT);
         // update the scene
-        this._visitScene()
-        this.emit(cc.Director.EVENT_AFTER_VISIT)
+        this._visitScene();
+        this.emit(cc.Director.EVENT_AFTER_VISIT);
 
         // Render
-        cc.g_NumberOfDraws = 0
-        cc.renderer.clear()
+        cc.g_NumberOfDraws = 0;
+        cc.renderer.clear();
 
-        cc.renderer.rendering(cc._renderContext)
-        this._totalFrames++
+        cc.renderer.rendering(cc._renderContext);
+        this._totalFrames++;
 
-        this.emit(cc.Director.EVENT_AFTER_DRAW)
-        eventManager.frameUpdateListeners()
+        this.emit(cc.Director.EVENT_AFTER_DRAW);
+        eventManager.frameUpdateListeners();
       }
-    }
+    };
 ```
 
 从源码来看，主循环主要的步骤为:
