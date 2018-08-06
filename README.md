@@ -4,7 +4,7 @@ Cocos Creator 是当前非常流行的手游和微信小游戏的开发工具，
 
 ### 代码核心组成
 
-从入口文件 index.js 来看，引擎的核心还是 cocos2d，源码位于 cocos2d 文件夹，启动引擎为 CCBoot.js，整个引擎的命名空间位于 cc module 之下。而 cocos2d 的重要部分有 CCgame, director, action, node, scene, sprite, render-texture 几个部分。
+从入口文件 index.js 来看，引擎的核心还是 cocos2d，源码位于 cocos2d 文件夹，启动引擎为 CCBoot.js，整个引擎的命名空间位于 cc module 之下。而 cocos2d 的重要部分有 game, director, action, node, scene, sprite, render-texture 几个部分。
 
 ### CCgame
 
